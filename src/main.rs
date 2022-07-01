@@ -1,24 +1,38 @@
-fn main() {
-    let numero_1 = 123;
-    let numero_2 = 321;
-    let suma = numero_1 + numero_2;
+use regex::Regex;
 
-    loop {
-        // Mostrar los 2 numeros en pantalla
-        print!("Escribir la suma de: {} + {}", numero_1, numero_2);
-    
-        // Obtener del usuario el numero que representa la suma
-    
-        let mut suma_usuario = String::new();
-        std::io::stdin().read_line(&mut suma_usuario).unwrap();
-        let suma_usuario_int: i32 = suma_usuario.trim().parse().unwrap();
-    
-        if suma_usuario_int == suma {
-            print!("Lo has conseguido ✅");
-            break;
-        } else {
-            print!("El resultado no es correcto intenta de nuevo ❌");
-        }
+fn main() {
+
+   // add regex
+   let re_add = Regex::new(r"(\d+)\s?\+\s?(\d+)").unwrap();
+   // get data from user
+
+   println!("Please add your expression: ");
+   let mut expression = String::new();
+   std::io::stdin().read_line(&mut expression).unwrap();
+
+   // apply operations
+   loop{
+    println!("{:?}", expression);
+    let caps = re_add.captures(expression.as_str());
+
+    if caps.is_none() {
+        break;
     }
+
+    let caps = caps.unwrap();
+
+    let cap_expresion = caps.get(0).unwrap().as_str();
+    let left_value: i32 = caps.get(1).unwrap().as_str().parse().unwrap();
+    let right_value: i32 = caps.get(2).unwrap().as_str().parse().unwrap();
+
+    let addition = left_value + right_value;
+    expression = expression.replace(cap_expresion, &addition.to_string())
+
+   }
+
+
+   // show result
+
+   println!("Result: {}", expression)
 
 }
